@@ -193,6 +193,10 @@ body {
   position: relative;
 }
 
+.scene:last-child {
+  height: 300vh;
+}
+
 .scene:first-child {
   height: 250vh;
 }
@@ -446,6 +450,30 @@ body {
 
 /* ─── FOOTER ─── */
 #footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2rem 3rem;
+  background: var(--black);
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+#footer span {
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ivory-low);
+}
+
+#footer span:first-child {
+  font-family: var(--font-display);
+  font-weight: 500;
+}
+
+/* ─── FOOTER ─── */
+#footer {
+  position: relative;
+  z-index: 10;
   display: flex;
   justify-content: space-between;
   align-items: center;
