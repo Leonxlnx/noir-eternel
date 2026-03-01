@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="NOIR ÉTERNEL – The Essence of Eternity. A cinematic fragrance experience.">
+  <title>NOIR ÉTERNEL</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Outfit:wght@200;300;400;500&display=swap"
+    rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js" defer></script>
+
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+  <!-- LOADER -->
+  <div id="loader">
+    <div class="loader-inner">
+      <div class="loader-brand">NOIR ÉTERNEL</div>
+      <div class="loader-sub">Loading Experience</div>
+      <div class="loader-track">
+        <div class="loader-fill" id="loaderBar"></div>
+      </div>
+      <div class="loader-pct" id="loaderPercent">0</div>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <nav id="nav">
+    <span class="nav-logo">NOIR ÉTERNEL</span>
+    <div class="nav-links">
+      <a href="#discover">Discover</a>
+      <a href="#essence">Essence</a>
+      <a href="#product">Collection</a>
+    </div>
+  </nav>
+
+  <!-- CANVAS -->
+  <canvas id="canvas"></canvas>
+
+  <!-- SCROLL SECTIONS -->
+  <main id="sections">
+
+    <!-- 1 – Intro -->
+    <section class="scene" data-scene="1">
+      <div class="scene-content">
+        <div class="text-wrap text-center" data-anim="hero">
+          <p class="eyebrow">The Essence of</p>
+          <h1 class="display">NOIR<br>ÉTERNEL</h1>
+          <p class="tagline">A fragrance born from the infinite</p>
+          <div class="scroll-cue">
+            <span>Scroll</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M12 5v14M5 12l7 7 7-7" />
+            </svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2 – Portal -->
+    <section class="scene" data-scene="2">
+      <div class="scene-content">
+        <div class="text-wrap text-right" data-anim="slide">
+          <p class="chapter">I</p>
+          <h2 class="heading">Born From<br>The Unknown</h2>
+          <p class="body">From the depths of darkness, a portal opens.<br>Something extraordinary emerges.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3 – Explosion -->
+    <section class="scene" data-scene="3">
+      <div class="scene-content">
+        <div class="text-wrap text-left" data-anim="slide">
+          <p class="chapter">II</p>
+          <h2 class="heading">Explosive<br>Elegance</h2>
+          <p class="body">Every note detonates with precision.<br>Bergamot and black pepper ignite the senses.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4 – Cloud / Ring -->
+    <section class="scene" data-scene="4" id="discover">
+      <div class="scene-content">
+        <div class="text-wrap text-center" data-anim="slide">
+          <p class="chapter">III</p>
+          <h2 class="heading">The Ripple<br>of Desire</h2>
+          <p class="body">A cloud of amber and oud expands into an eternal ring —<br>the scent that follows you,
+            everywhere.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5 – Infinity -->
+    <section class="scene" data-scene="5" id="essence">
+      <div class="scene-content">
+        <div class="text-wrap text-right" data-anim="slide">
+          <p class="chapter">IV</p>
+          <h2 class="heading">Infinite<br>Resonance</h2>
+          <p class="body">From ring to infinity, from infinity to heart.<br>Vanilla, musk, and forever.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6 – Heart / Finale -->
+    <section class="scene" data-scene="6">
+      <div class="scene-content">
+        <div class="text-wrap text-center" data-anim="slide">
+          <p class="chapter">V</p>
+          <h2 class="heading">Forever<br>Yours</h2>
+          <p class="body">The heart beats. The scent remains.<br>An eternal bond, sealed in fragrance.</p>
+        </div>
+      </div>
+    </section>
+
+
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer id="footer">
+    <span>NOIR ÉTERNEL</span>
+    <span>© 2026</span>
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+
+</html>
