@@ -129,20 +129,20 @@
         iResolution: { value: new THREE.Vector3(innerWidth, innerHeight, 1) },
         iMouse: { value: new THREE.Vector2(innerWidth / 2, innerHeight / 2) },
         iTime: { value: 0 },
-        uAngle: { value: 0.0 },         // 0 = straight, user's original
-        uNoise: { value: 0.3 },
+        uAngle: { value: 0.52 },        // ~30 degrees angled
+        uNoise: { value: 0.2 },
         uBlindCount: { value: 12 },
-        uSpotlightRadius: { value: 0.5 },
-        uSpotlightSoftness: { value: 1.0 },
-        uSpotlightOpacity: { value: 1.0 },
+        uSpotlightRadius: { value: 0.25 },   // much smaller spotlight
+        uSpotlightSoftness: { value: 1.2 },
+        uSpotlightOpacity: { value: 0.5 },     // dimmer spotlight
         uDistort: { value: 0.0 },
-        uShineFlip: { value: 0.0 },          // 0 = left shine
+        uShineFlip: { value: 0.0 },
         uOpacity: { value: 1.0 },
-        // Luxury dark gold/amber palette
-        uColor0: { value: new THREE.Vector3(0.35, 0.25, 0.08) },   // deep dark amber
-        uColor1: { value: new THREE.Vector3(0.55, 0.40, 0.14) },   // warm gold
-        uColor2: { value: new THREE.Vector3(0.15, 0.10, 0.04) },   // near-black bronze
-        uColor3: { value: new THREE.Vector3(0.42, 0.30, 0.10) },   // antique gold
+        // Much darker palette
+        uColor0: { value: new THREE.Vector3(0.15, 0.10, 0.03) },
+        uColor1: { value: new THREE.Vector3(0.28, 0.20, 0.07) },
+        uColor2: { value: new THREE.Vector3(0.06, 0.04, 0.01) },
+        uColor3: { value: new THREE.Vector3(0.20, 0.14, 0.05) },
     };
 
     // ─── Fullscreen quad ───
