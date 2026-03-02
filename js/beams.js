@@ -19,12 +19,12 @@
     const scene = new THREE.Scene();
     const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
 
-    // ─── Colors — luxury gold/amber palette ───
+    // ─── Colors — darker luxury palette ───
     const colors = [
-        [0.45, 0.32, 0.12],  // deep amber
-        [0.72, 0.55, 0.22],  // warm gold
-        [0.20, 0.14, 0.06],  // dark bronze
-        [0.55, 0.40, 0.15],  // antique gold
+        [0.22, 0.16, 0.06],  // deep amber (dark)
+        [0.40, 0.30, 0.12],  // warm gold (muted)
+        [0.10, 0.07, 0.03],  // dark bronze
+        [0.30, 0.22, 0.08],  // antique gold (dim)
     ];
 
     // ─── Shader ───
@@ -73,11 +73,25 @@
             return mix(uColor2, uColor3, f);
         }
 
+        vec2 rotate2D(vec2 p, float a) {
+            float c = cos(a);
+            float s = sin(a);
+            return mat2(c, -s, s, c) * p;
+        }
+
         void main() {
             vec2 uv = vUv;
 
-            // Gradient base
-            float t = uv.x;
+            // Rotate UVs for angled blinds (~25 degrees)
+            float aspect = iResolution.x / iResolution.y;
+            vec2 centered = uv * 2.0 - 1.0;
+            centered.x *= aspect;
+            vec2 rotated = rotate2D(centered, 0.44); // ~25 degrees
+            rotated.x /= aspect;
+            vec2 uvRot = rotated * 0.5 + 0.5;
+
+            // Gradient base (use rotated UVs)
+            float t = uvRot.x;
             vec3 base = getGradientColor(t);
 
             // Mouse-reactive spotlight
@@ -88,19 +102,27 @@
             float spot = (1.0 - 2.0 * pow(dn, uSpotlightSoftness)) * uSpotlightOpacity;
             spot = max(spot, 0.0);
 
-            // Blinds / stripes
-            float stripe = fract(uv.x * max(uBlindCount, 1.0));
+            // Angled blinds / stripes
+            float stripe = fract(uvRot.x * max(uBlindCount, 1.0));
             if (uShineFlip > 0.5) stripe = 1.0 - stripe;
 
+            // Visibility mask — only some blinds glow, others stay dark
+            float blindIdx = floor(uvRot.x * uBlindCount);
+            float vis = rand(vec2(blindIdx * 13.37, 7.77));
+            float blindMask = smoothstep(0.35, 0.65, vis); // ~50% of blinds visible
+
             // Compose
-            vec3 col = vec3(spot) + base - vec3(stripe);
+            vec3 col = (vec3(spot) + base - vec3(stripe)) * blindMask;
 
             // Film grain
             col += (rand(gl_FragCoord.xy + iTime) - 0.5) * uNoise;
 
-            // Vignette — fade edges to black
-            float vignette = 1.0 - smoothstep(0.3, 1.2, length(uv - 0.5) * 1.4);
+            // Stronger vignette — fade edges to black
+            float vignette = 1.0 - smoothstep(0.2, 1.0, length(uv - 0.5) * 1.6);
             col *= vignette;
+
+            // Darken overall
+            col *= 0.7;
 
             // Global opacity for scroll dimming
             col *= uOpacity;
