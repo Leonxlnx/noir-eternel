@@ -130,19 +130,19 @@
         iMouse: { value: new THREE.Vector2(innerWidth / 2, innerHeight / 2) },
         iTime: { value: 0 },
         uAngle: { value: 0.52 },        // ~30 degrees angled
-        uNoise: { value: 0.2 },
+        uNoise: { value: 0.25 },
         uBlindCount: { value: 12 },
-        uSpotlightRadius: { value: 0.25 },   // much smaller spotlight
-        uSpotlightSoftness: { value: 1.2 },
-        uSpotlightOpacity: { value: 0.5 },     // dimmer spotlight
+        uSpotlightRadius: { value: 0.35 },
+        uSpotlightSoftness: { value: 1.0 },
+        uSpotlightOpacity: { value: 0.8 },
         uDistort: { value: 0.0 },
         uShineFlip: { value: 0.0 },
         uOpacity: { value: 1.0 },
-        // Much darker palette
-        uColor0: { value: new THREE.Vector3(0.15, 0.10, 0.03) },
-        uColor1: { value: new THREE.Vector3(0.28, 0.20, 0.07) },
-        uColor2: { value: new THREE.Vector3(0.06, 0.04, 0.01) },
-        uColor3: { value: new THREE.Vector3(0.20, 0.14, 0.05) },
+        // Vibrant gold/amber — rich but luxury
+        uColor0: { value: new THREE.Vector3(0.45, 0.28, 0.05) },   // deep amber
+        uColor1: { value: new THREE.Vector3(0.72, 0.50, 0.12) },   // warm gold
+        uColor2: { value: new THREE.Vector3(0.25, 0.15, 0.03) },   // dark bronze
+        uColor3: { value: new THREE.Vector3(0.60, 0.40, 0.10) },   // bright gold
     };
 
     // ─── Fullscreen quad ───
@@ -205,6 +205,6 @@
 
     // ─── Public API ───
     window.beamsDim = function (dimmed) {
-        targetOpacity = dimmed ? 0.1 : 1.0;
+        targetOpacity = dimmed ? 0.0 : 1.0;
     };
 })();

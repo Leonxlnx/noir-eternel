@@ -158,7 +158,7 @@
             onUpdate: () => {
                 const scrolled = scrollY > 100;
                 nav.classList.toggle('scrolled', scrolled);
-                if (window.beamsDim) window.beamsDim(scrollY > innerHeight);
+                if (window.beamsDim) window.beamsDim(scrollY > innerHeight * 0.5);
             }
         });
 
