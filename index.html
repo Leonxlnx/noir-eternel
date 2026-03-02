@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Outfit:wght@200;300;400;500&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Outfit:wght@200;300;400;500;600&display=swap"
     rel="stylesheet">
 
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js" defer></script>
@@ -33,13 +33,109 @@
     </div>
   </div>
 
+  <!-- BEAMS -->
+  <div class="beams" id="beams">
+    <div class="beam beam-1"></div>
+    <div class="beam beam-2"></div>
+    <div class="beam beam-3"></div>
+    <div class="beam beam-4"></div>
+    <div class="beam beam-5"></div>
+  </div>
+
   <!-- NAV -->
   <nav id="nav">
-    <span class="nav-logo">NOIR ÉTERNEL</span>
-    <div class="nav-links">
-      <a href="#discover">Discover</a>
-      <a href="#essence">Essence</a>
-      <a href="#product">Collection</a>
+    <div class="nav-inner">
+      <!-- Logo -->
+      <a href="#" class="nav-logo">
+        <span class="nav-logo-icon">◆</span>
+        <span class="nav-logo-text">NOIR ÉTERNEL</span>
+      </a>
+
+      <!-- Nav items -->
+      <div class="nav-menu">
+        <div class="nav-item">
+          <button class="nav-link">
+            Fragrance
+            <svg class="nav-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <path d="M6 9l6 6 6-6" />
+            </svg>
+          </button>
+          <div class="nav-dropdown">
+            <div class="dropdown-grid">
+              <a href="#discover" class="dropdown-card dropdown-card-wide">
+                <span class="dropdown-icon">✦</span>
+                <div>
+                  <span class="dropdown-title">The Scent</span>
+                  <span class="dropdown-desc">Discover the fragrance journey</span>
+                </div>
+                <svg class="dropdown-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="1.5">
+                  <path d="M7 17L17 7M17 7H7M17 7v10" />
+                </svg>
+              </a>
+              <a href="#essence" class="dropdown-card">
+                <span class="dropdown-icon">◈</span>
+                <div>
+                  <span class="dropdown-title">Notes</span>
+                  <span class="dropdown-desc">Top, Heart & Base</span>
+                </div>
+              </a>
+              <a href="#" class="dropdown-card">
+                <span class="dropdown-icon">♦</span>
+                <div>
+                  <span class="dropdown-title">Collection</span>
+                  <span class="dropdown-desc">Eau de Parfum</span>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="nav-item">
+          <button class="nav-link">
+            Story
+            <svg class="nav-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <path d="M6 9l6 6 6-6" />
+            </svg>
+          </button>
+          <div class="nav-dropdown">
+            <div class="dropdown-grid">
+              <a href="#" class="dropdown-card dropdown-card-wide">
+                <span class="dropdown-icon">∞</span>
+                <div>
+                  <span class="dropdown-title">The Journey</span>
+                  <span class="dropdown-desc">From darkness to eternity</span>
+                </div>
+                <svg class="dropdown-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="1.5">
+                  <path d="M7 17L17 7M17 7H7M17 7v10" />
+                </svg>
+              </a>
+              <a href="#" class="dropdown-card">
+                <span class="dropdown-icon">◉</span>
+                <div>
+                  <span class="dropdown-title">Craftsmanship</span>
+                  <span class="dropdown-desc">Art of perfumery</span>
+                </div>
+              </a>
+              <a href="#" class="dropdown-card">
+                <span class="dropdown-icon">▲</span>
+                <div>
+                  <span class="dropdown-title">Philosophy</span>
+                  <span class="dropdown-desc">Our vision</span>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <a href="#" class="nav-link nav-link-simple">Atelier</a>
+      </div>
+
+      <!-- CTA -->
+      <a href="#" class="nav-cta">Discover Now</a>
     </div>
   </nav>
 
@@ -49,18 +145,16 @@
   <!-- SCROLL SECTIONS -->
   <main id="sections">
 
-    <!-- 1 – Intro -->
+    <!-- 1 – Intro / Hero -->
     <section class="scene" data-scene="1">
       <div class="scene-content">
         <div class="text-wrap text-center" data-anim="hero">
-          <p class="eyebrow">The Essence of</p>
+          <p class="eyebrow">The Essence of Eternity</p>
           <h1 class="display">NOIR<br>ÉTERNEL</h1>
-          <p class="tagline">A fragrance born from the infinite</p>
+          <p class="tagline">Where darkness meets desire · A fragrance without boundaries</p>
           <div class="scroll-cue">
-            <span>Scroll</span>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <path d="M12 5v14M5 12l7 7 7-7" />
-            </svg>
+            <div class="scroll-line"></div>
+            <span>Scroll to explore</span>
           </div>
         </div>
       </div>
@@ -122,14 +216,21 @@
       </div>
     </section>
 
-
-
   </main>
 
   <!-- FOOTER -->
   <footer id="footer">
-    <span>NOIR ÉTERNEL</span>
-    <span>© 2026</span>
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="footer-logo">◆ NOIR ÉTERNEL</span>
+        <span class="footer-copy">© 2026 · All rights reserved</span>
+      </div>
+      <div class="footer-links">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Contact</a>
+      </div>
+    </div>
   </footer>
 
   <script src="js/app.js"></script>
