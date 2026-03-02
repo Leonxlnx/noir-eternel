@@ -1,7 +1,7 @@
 /**
- * NOIR ÉTERNEL – GradientBlinds Shader (Hero Only)
- * Ported from react-bits/GradientBlinds to vanilla Three.js
- * Original shader logic preserved, luxury dark gold palette
+ * GradientBlinds – Vanilla port of react-bits/GradientBlinds
+ * Uses OGL-style shader but rendered via Three.js
+ * EXACT original shader logic, gold palette, mix-blend-mode: lighten via CSS
  */
 (function () {
     'use strict';
@@ -13,13 +13,13 @@
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setSize(innerWidth, innerHeight);
     renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-    renderer.setClearColor(0x000000, 0);
+    renderer.setClearColor(0x000000, 1);
     container.appendChild(renderer.domElement);
 
     const scene = new THREE.Scene();
     const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
 
-    // ─── Shader — faithful to original GradientBlinds ───
+    // ─── Exact original shader from react-bits ───
     const vertexShader = `
         varying vec2 vUv;
         void main() {
@@ -68,7 +68,6 @@
             float seg = floor(scaled);
             float f = fract(scaled);
             f = f * f * (3.0 - 2.0 * f);
-
             if (seg < 1.0) return mix(uColor0, uColor1, f);
             if (seg < 2.0) return mix(uColor1, uColor2, f);
             return mix(uColor2, uColor3, f);
@@ -85,7 +84,6 @@
             pr.x /= aspect;
             vec2 uv = pr * 0.5 + 0.5;
 
-            // Optional distortion
             vec2 uvMod = uv;
             if (uDistort > 0.0) {
                 float a = uvMod.y * 6.0;
@@ -98,21 +96,20 @@
             float t = uvMod.x;
             vec3 base = getGradientColor(t);
 
-            // Mouse-reactive ambient glow — spreads across all blinds
-            vec2 offset = iMouse / iResolution.xy;
+            // EXACT original spotlight formula
+            vec2 offset = vec2(iMouse.x / iResolution.x, iMouse.y / iResolution.y);
             float d = length(uv0 - offset);
-            float r = max(uSpotlightRadius, 0.0001);
+            float r = max(uSpotlightRadius, 1e-4);
             float dn = d / r;
-            float spot = (1.0 - pow(dn, uSpotlightSoftness)) * uSpotlightOpacity;
-            spot = smoothstep(-0.2, 1.0, spot);
-            vec3 cir = vec3(max(spot, 0.0));
+            float spot = (1.0 - 2.0 * pow(dn, uSpotlightSoftness)) * uSpotlightOpacity;
+            vec3 cir = vec3(spot);
 
-            // Blinds stripes
+            // EXACT original stripe formula
             float stripe = fract(uvMod.x * max(uBlindCount, 1.0));
             if (uShineFlip > 0.5) stripe = 1.0 - stripe;
             vec3 ran = vec3(stripe);
 
-            // Original compose formula
+            // EXACT original compose
             vec3 col = cir + base - ran;
 
             // Film grain
@@ -125,25 +122,25 @@
         }
     `;
 
-    // ─── Uniforms ───
+    // ─── Uniforms — matches original defaults with gold colors ───
     const uniforms = {
         iResolution: { value: new THREE.Vector3(innerWidth, innerHeight, 1) },
         iMouse: { value: new THREE.Vector2(innerWidth / 2, innerHeight / 2) },
         iTime: { value: 0 },
-        uAngle: { value: 0.52 },        // ~30 degrees angled
-        uNoise: { value: 0.15 },
-        uBlindCount: { value: 12 },
-        uSpotlightRadius: { value: 2.0 },    // huge — covers everything
-        uSpotlightSoftness: { value: 0.3 },    // very soft falloff
-        uSpotlightOpacity: { value: 0.4 },    // subtle ambient
+        uAngle: { value: 0.52 },           // ~30deg angled
+        uNoise: { value: 0.3 },             // original default
+        uBlindCount: { value: 12 },              // original default
+        uSpotlightRadius: { value: 0.5 },      // original default
+        uSpotlightSoftness: { value: 1.0 },      // original default
+        uSpotlightOpacity: { value: 1.0 },      // original default
         uDistort: { value: 0.0 },
         uShineFlip: { value: 0.0 },
         uOpacity: { value: 1.0 },
-        // Dark subtle gold
-        uColor0: { value: new THREE.Vector3(0.18, 0.12, 0.03) },
-        uColor1: { value: new THREE.Vector3(0.30, 0.22, 0.06) },
-        uColor2: { value: new THREE.Vector3(0.08, 0.05, 0.01) },
-        uColor3: { value: new THREE.Vector3(0.24, 0.17, 0.05) },
+        // Dark gold palette — blend mode lighten handles visibility
+        uColor0: { value: new THREE.Vector3(0.55, 0.35, 0.08) },
+        uColor1: { value: new THREE.Vector3(0.25, 0.15, 0.03) },
+        uColor2: { value: new THREE.Vector3(0.45, 0.28, 0.06) },
+        uColor3: { value: new THREE.Vector3(0.15, 0.08, 0.02) },
     };
 
     // ─── Fullscreen quad ───
@@ -152,7 +149,6 @@
         vertexShader,
         fragmentShader,
         uniforms,
-        transparent: true,
         depthWrite: false,
     });
     scene.add(new THREE.Mesh(geo, mat));
