@@ -193,115 +193,78 @@
         if (uShapeSection) {
             const uWords = uShapeSection.querySelectorAll('.u-word');
             const uBody = uShapeSection.querySelector('.u-body');
+            let uPlayed = false;
 
-            const uTl = gsap.timeline({
-                scrollTrigger: {
-                    trigger: scenes[2],
-                    start: '50% top',
-                    end: 'bottom top',
-                    onLeave: () => {
-                        gsap.to([...uWords, uBody], { opacity: 0, duration: 0.3 });
-                    },
-                    onEnterBack: () => {
-                        uTl.restart();
-                    },
-                    onLeaveBack: () => {
-                        gsap.to([...uWords, uBody], { opacity: 0, duration: 0.3 });
-                    },
-                }
+            ScrollTrigger.create({
+                trigger: scenes[2],
+                start: '35% top',
+                end: '95% top',
+                onEnter: () => {
+                    if (!uPlayed) {
+                        uPlayed = true;
+                        // Animate each word in
+                        gsap.fromTo(uWords[0],
+                            { opacity: 0, x: -80, rotateZ: -5 },
+                            { opacity: 1, x: 0, rotateZ: 0, duration: 0.8, ease: 'power3.out' }
+                        );
+                        gsap.fromTo(uWords[1],
+                            { opacity: 0, x: 80, rotateZ: 5 },
+                            { opacity: 1, x: 0, rotateZ: 0, duration: 0.8, ease: 'power3.out', delay: 0.15 }
+                        );
+                        if (uBody) {
+                            gsap.fromTo(uBody,
+                                { opacity: 0, y: 20 },
+                                { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out', delay: 0.3 }
+                            );
+                        }
+                        gsap.fromTo(uWords[2],
+                            { opacity: 0, y: -50 },
+                            { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out', delay: 0.4 }
+                        );
+                        gsap.fromTo(uWords[3],
+                            { opacity: 0, y: 60 },
+                            { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out', delay: 0.55 }
+                        );
+                        gsap.fromTo(uWords[4],
+                            { opacity: 0, scale: 0.3, rotateZ: -180 },
+                            { opacity: 1, scale: 1, rotateZ: 0, duration: 1, ease: 'elastic.out(1, 0.5)', delay: 0.65 }
+                        );
+                    }
+                },
+                onLeave: () => {
+                    gsap.to([...uWords, uBody].filter(Boolean), { opacity: 0, duration: 0.4 });
+                    uPlayed = false;
+                },
+                onEnterBack: () => {
+                    gsap.to([...uWords, uBody].filter(Boolean), { opacity: 1, duration: 0.4 });
+                },
+                onLeaveBack: () => {
+                    gsap.to([...uWords, uBody].filter(Boolean), { opacity: 0, duration: 0.3 });
+                    uPlayed = false;
+                },
             });
-
-            // Top left flies in from left
-            uTl.fromTo(uWords[0],
-                { opacity: 0, x: -80, rotateZ: -5 },
-                { opacity: 1, x: 0, rotateZ: 0, duration: 0.8, ease: 'power3.out' },
-                0
-            );
-            // Top right flies in from right
-            uTl.fromTo(uWords[1],
-                { opacity: 0, x: 80, rotateZ: 5 },
-                { opacity: 1, x: 0, rotateZ: 0, duration: 0.8, ease: 'power3.out' },
-                0.15
-            );
-            // Body text fades in
-            if (uBody) {
-                uTl.fromTo(uBody,
-                    { opacity: 0, y: 20 },
-                    { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' },
-                    0.3
-                );
-            }
-            // Mid right drops in
-            uTl.fromTo(uWords[2],
-                { opacity: 0, y: -50 },
-                { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' },
-                0.4
-            );
-            // Bottom left slides up
-            uTl.fromTo(uWords[3],
-                { opacity: 0, y: 60 },
-                { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' },
-                0.55
-            );
-            // Bottom right (infinity symbol) scales in
-            uTl.fromTo(uWords[4],
-                { opacity: 0, scale: 0.3, rotateZ: -180 },
-                { opacity: 1, scale: 1, rotateZ: 0, duration: 1, ease: 'elastic.out(1, 0.5)' },
-                0.65
-            );
         }
 
-        // ─── Scenes 4, 5, 6: Standard text reveals with adjusted timing ───
-        // Scene 4 (Ring) — appears a bit later
-        const scene4 = scenes[3];
-        if (scene4) {
-            const tw4 = scene4.querySelector('.text-wrap');
-            if (tw4) {
-                ScrollTrigger.create({
-                    trigger: scene4,
-                    start: '50% top',
-                    end: 'bottom top',
-                    onEnter: () => tw4.classList.add('visible'),
-                    onLeave: () => tw4.classList.remove('visible'),
-                    onEnterBack: () => tw4.classList.add('visible'),
-                    onLeaveBack: () => tw4.classList.remove('visible'),
-                });
-            }
+        // ─── Scenes 4, 5, 6: Text reveals ───
+        // Helper: simple robust text toggle
+        function setupTextReveal(sceneEl, startPct) {
+            if (!sceneEl) return;
+            const tw = sceneEl.querySelector('.text-wrap');
+            if (!tw) return;
+            ScrollTrigger.create({
+                trigger: sceneEl,
+                start: startPct + '% top',
+                end: '95% top',
+                onEnter: () => tw.classList.add('visible'),
+                onLeave: () => tw.classList.remove('visible'),
+                onEnterBack: () => tw.classList.add('visible'),
+                onLeaveBack: () => tw.classList.remove('visible'),
+            });
         }
 
-        // Scene 5 (Infinity) — appears later
-        const scene5 = scenes[4];
-        if (scene5) {
-            const tw5 = scene5.querySelector('.text-wrap');
-            if (tw5) {
-                ScrollTrigger.create({
-                    trigger: scene5,
-                    start: '50% top',
-                    end: 'bottom top',
-                    onEnter: () => tw5.classList.add('visible'),
-                    onLeave: () => tw5.classList.remove('visible'),
-                    onEnterBack: () => tw5.classList.add('visible'),
-                    onLeaveBack: () => tw5.classList.remove('visible'),
-                });
-            }
-        }
-
-        // Scene 6 (Heart / Finale)
-        const scene6 = scenes[5];
-        if (scene6) {
-            const tw6 = scene6.querySelector('.text-wrap');
-            if (tw6) {
-                ScrollTrigger.create({
-                    trigger: scene6,
-                    start: '40% top',
-                    end: 'bottom top',
-                    onEnter: () => tw6.classList.add('visible'),
-                    onLeave: () => tw6.classList.remove('visible'),
-                    onEnterBack: () => tw6.classList.add('visible'),
-                    onLeaveBack: () => tw6.classList.remove('visible'),
-                });
-            }
-        }
+        setupTextReveal(scenes[3], 35);  // Scene 4 – Ring
+        setupTextReveal(scenes[4], 35);  // Scene 5 – Infinity
+        setupTextReveal(scenes[5], 30);  // Scene 6 – Heart
 
         // ─── Nav + Beams ───
         ScrollTrigger.create({
