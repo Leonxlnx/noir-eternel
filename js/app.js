@@ -81,13 +81,11 @@
     function start() {
         if (ready) return;
         ready = true;
-        loaderBar.style.width = '100%';
-        loaderPct.textContent = '100';
         setTimeout(() => {
             loader.classList.add('done');
             resize();
             initGSAP();
-        }, 500);
+        }, 400);
     }
 
     // ─── GSAP ───
