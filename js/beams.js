@@ -99,6 +99,7 @@
         mesh.userData = {
             baseX: cfg.x,
             baseRz: cfg.rz,
+            baseIntensity: cfg.intensity,
             swaySpeed: 0.2 + Math.random() * 0.3,
             swayAmt: 0.15 + Math.random() * 0.2,
         };
@@ -160,7 +161,7 @@
             const ud = mesh.userData;
             mesh.position.x = ud.baseX + Math.sin(t * ud.swaySpeed) * ud.swayAmt;
             mesh.rotation.z = ud.baseRz + Math.sin(t * ud.swaySpeed * 0.7 + 1) * 0.03;
-            mesh.material.uniforms.uIntensity.value *= currentOpacity;
+            mesh.material.uniforms.uIntensity.value = ud.baseIntensity * currentOpacity;
         });
 
         // Animate particles
