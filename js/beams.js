@@ -98,12 +98,13 @@
             float t = uvMod.x;
             vec3 base = getGradientColor(t);
 
-            // Mouse-reactive spotlight
+            // Mouse-reactive ambient glow — spreads across all blinds
             vec2 offset = iMouse / iResolution.xy;
             float d = length(uv0 - offset);
             float r = max(uSpotlightRadius, 0.0001);
             float dn = d / r;
-            float spot = (1.0 - 2.0 * pow(dn, uSpotlightSoftness)) * uSpotlightOpacity;
+            float spot = (1.0 - pow(dn, uSpotlightSoftness)) * uSpotlightOpacity;
+            spot = smoothstep(-0.2, 1.0, spot);
             vec3 cir = vec3(max(spot, 0.0));
 
             // Blinds stripes
@@ -130,19 +131,19 @@
         iMouse: { value: new THREE.Vector2(innerWidth / 2, innerHeight / 2) },
         iTime: { value: 0 },
         uAngle: { value: 0.52 },        // ~30 degrees angled
-        uNoise: { value: 0.25 },
+        uNoise: { value: 0.15 },
         uBlindCount: { value: 12 },
-        uSpotlightRadius: { value: 0.35 },
-        uSpotlightSoftness: { value: 1.0 },
-        uSpotlightOpacity: { value: 0.8 },
+        uSpotlightRadius: { value: 2.0 },    // huge — covers everything
+        uSpotlightSoftness: { value: 0.3 },    // very soft falloff
+        uSpotlightOpacity: { value: 0.4 },    // subtle ambient
         uDistort: { value: 0.0 },
         uShineFlip: { value: 0.0 },
         uOpacity: { value: 1.0 },
-        // Vibrant gold/amber — rich but luxury
-        uColor0: { value: new THREE.Vector3(0.45, 0.28, 0.05) },   // deep amber
-        uColor1: { value: new THREE.Vector3(0.72, 0.50, 0.12) },   // warm gold
-        uColor2: { value: new THREE.Vector3(0.25, 0.15, 0.03) },   // dark bronze
-        uColor3: { value: new THREE.Vector3(0.60, 0.40, 0.10) },   // bright gold
+        // Dark subtle gold
+        uColor0: { value: new THREE.Vector3(0.18, 0.12, 0.03) },
+        uColor1: { value: new THREE.Vector3(0.30, 0.22, 0.06) },
+        uColor2: { value: new THREE.Vector3(0.08, 0.05, 0.01) },
+        uColor3: { value: new THREE.Vector3(0.24, 0.17, 0.05) },
     };
 
     // ─── Fullscreen quad ───
