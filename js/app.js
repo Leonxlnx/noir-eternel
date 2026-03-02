@@ -19,8 +19,6 @@
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d', { alpha: false });
     const loader = document.getElementById('loader');
-    const loaderBar = document.getElementById('loaderBar');
-    const loaderPct = document.getElementById('loaderPercent');
     const nav = document.getElementById('nav');
 
 
@@ -67,9 +65,6 @@
 
                 img.onload = img.onerror = () => {
                     loaded++;
-                    const pct = Math.round((loaded / TOTAL) * 100);
-                    loaderBar.style.width = pct + '%';
-                    loaderPct.textContent = pct;
                     if (gi === 0) paint(0);
                     if (loaded >= TOTAL) start();
                 };

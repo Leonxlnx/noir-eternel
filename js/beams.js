@@ -1,7 +1,7 @@
 /**
- * NOIR ÉTERNEL – GradientBlinds Hero Shader
+ * NOIR ÉTERNEL – GradientBlinds Shader (Hero Only)
  * Ported from react-bits/GradientBlinds to vanilla Three.js
- * Professional dark gold/amber colorway for luxury perfume brand
+ * Original shader logic preserved, luxury dark gold palette
  */
 (function () {
     'use strict';
@@ -19,15 +19,7 @@
     const scene = new THREE.Scene();
     const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
 
-    // ─── Colors — darker luxury palette ───
-    const colors = [
-        [0.22, 0.16, 0.06],  // deep amber (dark)
-        [0.40, 0.30, 0.12],  // warm gold (muted)
-        [0.10, 0.07, 0.03],  // dark bronze
-        [0.30, 0.22, 0.08],  // antique gold (dim)
-    ];
-
-    // ─── Shader ───
+    // ─── Shader — faithful to original GradientBlinds ───
     const vertexShader = `
         varying vec2 vUv;
         void main() {
@@ -42,35 +34,26 @@
         uniform vec3  iResolution;
         uniform vec2  iMouse;
         uniform float iTime;
+
+        uniform float uAngle;
         uniform float uNoise;
         uniform float uBlindCount;
         uniform float uSpotlightRadius;
         uniform float uSpotlightSoftness;
         uniform float uSpotlightOpacity;
+        uniform float uDistort;
         uniform float uShineFlip;
         uniform float uOpacity;
-        uniform vec3  uColor0;
-        uniform vec3  uColor1;
-        uniform vec3  uColor2;
-        uniform vec3  uColor3;
+
+        uniform vec3 uColor0;
+        uniform vec3 uColor1;
+        uniform vec3 uColor2;
+        uniform vec3 uColor3;
 
         varying vec2 vUv;
 
         float rand(vec2 co) {
             return fract(sin(dot(co, vec2(12.9898, 78.233))) * 43758.5453);
-        }
-
-        vec3 getGradientColor(float t) {
-            float tt = clamp(t, 0.0, 1.0);
-            float scaled = tt * 3.0;
-            float seg = floor(scaled);
-            float f = fract(scaled);
-            // Smooth interpolation
-            f = f * f * (3.0 - 2.0 * f);
-
-            if (seg < 1.0) return mix(uColor0, uColor1, f);
-            if (seg < 2.0) return mix(uColor1, uColor2, f);
-            return mix(uColor2, uColor3, f);
         }
 
         vec2 rotate2D(vec2 p, float a) {
@@ -79,56 +62,62 @@
             return mat2(c, -s, s, c) * p;
         }
 
+        vec3 getGradientColor(float t) {
+            float tt = clamp(t, 0.0, 1.0);
+            float scaled = tt * 3.0;
+            float seg = floor(scaled);
+            float f = fract(scaled);
+            f = f * f * (3.0 - 2.0 * f);
+
+            if (seg < 1.0) return mix(uColor0, uColor1, f);
+            if (seg < 2.0) return mix(uColor1, uColor2, f);
+            return mix(uColor2, uColor3, f);
+        }
+
         void main() {
-            vec2 uv = vUv;
+            vec2 uv0 = vUv;
 
-            // Rotate UVs for angled blinds (~20 degrees)
+            // Rotate for angled blinds
             float aspect = iResolution.x / iResolution.y;
-            vec2 centered = uv * 2.0 - 1.0;
-            centered.x *= aspect;
-            vec2 rotated = rotate2D(centered, 0.35);
-            rotated.x /= aspect;
-            vec2 uvRot = rotated * 0.5 + 0.5;
+            vec2 p = uv0 * 2.0 - 1.0;
+            p.x *= aspect;
+            vec2 pr = rotate2D(p, uAngle);
+            pr.x /= aspect;
+            vec2 uv = pr * 0.5 + 0.5;
 
-            // Gradient base (use rotated UVs)
-            float t = uvRot.x;
-            vec3 base = getGradientColor(t) * 0.5;
+            // Optional distortion
+            vec2 uvMod = uv;
+            if (uDistort > 0.0) {
+                float a = uvMod.y * 6.0;
+                float b = uvMod.x * 6.0;
+                float w = 0.01 * uDistort;
+                uvMod.x += sin(a) * w;
+                uvMod.y += cos(b) * w;
+            }
 
-            // Mouse-reactive spotlight — softer, larger
-            vec2 mouseUV = iMouse / iResolution.xy;
-            float dist = length(uv - mouseUV);
-            float r = max(uSpotlightRadius, 0.001);
-            float dn = dist / r;
+            float t = uvMod.x;
+            vec3 base = getGradientColor(t);
+
+            // Mouse-reactive spotlight
+            vec2 offset = iMouse / iResolution.xy;
+            float d = length(uv0 - offset);
+            float r = max(uSpotlightRadius, 0.0001);
+            float dn = d / r;
             float spot = (1.0 - 2.0 * pow(dn, uSpotlightSoftness)) * uSpotlightOpacity;
-            spot = max(spot, 0.0) * 0.6;
+            vec3 cir = vec3(max(spot, 0.0));
 
-            // Smooth sine-based beams instead of hard stripes
-            float beamPhase = uvRot.x * uBlindCount * 3.14159;
-            float beam = pow(max(sin(beamPhase), 0.0), 3.0); // soft glowing bars
+            // Blinds stripes
+            float stripe = fract(uvMod.x * max(uBlindCount, 1.0));
+            if (uShineFlip > 0.5) stripe = 1.0 - stripe;
+            vec3 ran = vec3(stripe);
 
-            // Visibility mask — only ~30% of beams glow
-            float blindIdx = floor(uvRot.x * uBlindCount);
-            float vis = rand(vec2(blindIdx * 13.37, 7.77));
-            float blindMask = smoothstep(0.55, 0.75, vis);
+            // Original compose formula
+            vec3 col = cir + base - ran;
 
-            // Edge softening per beam — smooth in/out
-            float blindLocal = fract(uvRot.x * uBlindCount);
-            float edgeSoft = smoothstep(0.0, 0.15, blindLocal) * smoothstep(1.0, 0.85, blindLocal);
+            // Film grain
+            col += (rand(gl_FragCoord.xy + iTime) - 0.5) * uNoise;
 
-            // Compose — much subtler
-            vec3 col = (base + vec3(spot)) * (beam * blindMask * edgeSoft * 0.8 + 0.05);
-
-            // Subtle film grain
-            col += (rand(gl_FragCoord.xy + iTime) - 0.5) * uNoise * 0.6;
-
-            // Strong vignette
-            float vignette = 1.0 - smoothstep(0.15, 0.85, length(uv - 0.5) * 1.8);
-            col *= vignette;
-
-            // Darken overall
-            col *= 0.45;
-
-            // Global opacity for scroll dimming
+            // Scroll dimming
             col *= uOpacity;
 
             gl_FragColor = vec4(col, 1.0);
@@ -140,17 +129,20 @@
         iResolution: { value: new THREE.Vector3(innerWidth, innerHeight, 1) },
         iMouse: { value: new THREE.Vector2(innerWidth / 2, innerHeight / 2) },
         iTime: { value: 0 },
-        uNoise: { value: 0.25 },
-        uBlindCount: { value: 10 },
-        uSpotlightRadius: { value: 0.55 },
-        uSpotlightSoftness: { value: 1.2 },
-        uSpotlightOpacity: { value: 0.85 },
-        uShineFlip: { value: 0 },
+        uAngle: { value: 0.0 },         // 0 = straight, user's original
+        uNoise: { value: 0.3 },
+        uBlindCount: { value: 12 },
+        uSpotlightRadius: { value: 0.5 },
+        uSpotlightSoftness: { value: 1.0 },
+        uSpotlightOpacity: { value: 1.0 },
+        uDistort: { value: 0.0 },
+        uShineFlip: { value: 0.0 },          // 0 = left shine
         uOpacity: { value: 1.0 },
-        uColor0: { value: new THREE.Vector3(...colors[0]) },
-        uColor1: { value: new THREE.Vector3(...colors[1]) },
-        uColor2: { value: new THREE.Vector3(...colors[2]) },
-        uColor3: { value: new THREE.Vector3(...colors[3]) },
+        // Luxury dark gold/amber palette
+        uColor0: { value: new THREE.Vector3(0.35, 0.25, 0.08) },   // deep dark amber
+        uColor1: { value: new THREE.Vector3(0.55, 0.40, 0.14) },   // warm gold
+        uColor2: { value: new THREE.Vector3(0.15, 0.10, 0.04) },   // near-black bronze
+        uColor3: { value: new THREE.Vector3(0.42, 0.30, 0.10) },   // antique gold
     };
 
     // ─── Fullscreen quad ───
@@ -162,17 +154,17 @@
         transparent: true,
         depthWrite: false,
     });
-    const mesh = new THREE.Mesh(geo, mat);
-    scene.add(mesh);
+    scene.add(new THREE.Mesh(geo, mat));
 
-    // ─── Mouse tracking with dampening ───
+    // ─── Mouse with dampening ───
     const mouseTarget = { x: innerWidth / 2, y: innerHeight / 2 };
     const mouseCurrent = { x: innerWidth / 2, y: innerHeight / 2 };
-    const dampening = 0.12;
+    const dampening = 0.15;
 
     document.addEventListener('mousemove', (e) => {
-        mouseTarget.x = e.clientX * renderer.getPixelRatio();
-        mouseTarget.y = (innerHeight - e.clientY) * renderer.getPixelRatio();
+        const dpr = renderer.getPixelRatio();
+        mouseTarget.x = e.clientX * dpr;
+        mouseTarget.y = (innerHeight - e.clientY) * dpr;
     });
 
     // ─── Resize ───
@@ -180,7 +172,6 @@
         renderer.setSize(innerWidth, innerHeight);
         const dpr = renderer.getPixelRatio();
         uniforms.iResolution.value.set(innerWidth * dpr, innerHeight * dpr, 1);
-        // Adapt blind count to screen width
         const maxBlinds = Math.max(1, Math.floor(innerWidth / 50));
         uniforms.uBlindCount.value = Math.min(12, maxBlinds);
     }
@@ -193,7 +184,6 @@
 
     function animate(time) {
         requestAnimationFrame(animate);
-
         const dt = (time - lastTime) / 1000;
         lastTime = time;
 
@@ -205,17 +195,16 @@
         mouseCurrent.y += (mouseTarget.y - mouseCurrent.y) * factor;
         uniforms.iMouse.value.set(mouseCurrent.x, mouseCurrent.y);
 
-        // Smooth opacity for scroll dimming
-        const currentOp = uniforms.uOpacity.value;
-        uniforms.uOpacity.value += (targetOpacity - currentOp) * 0.03;
+        // Smooth scroll dimming
+        const cur = uniforms.uOpacity.value;
+        uniforms.uOpacity.value += (targetOpacity - cur) * 0.03;
 
         renderer.render(scene, camera);
     }
-
     animate(0);
 
-    // ─── Public API for scroll dimming ───
+    // ─── Public API ───
     window.beamsDim = function (dimmed) {
-        targetOpacity = dimmed ? 0.08 : 1.0;
+        targetOpacity = dimmed ? 0.1 : 1.0;
     };
 })();
