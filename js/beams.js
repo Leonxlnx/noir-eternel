@@ -82,47 +82,51 @@
         void main() {
             vec2 uv = vUv;
 
-            // Rotate UVs for angled blinds (~25 degrees)
+            // Rotate UVs for angled blinds (~20 degrees)
             float aspect = iResolution.x / iResolution.y;
             vec2 centered = uv * 2.0 - 1.0;
             centered.x *= aspect;
-            vec2 rotated = rotate2D(centered, 0.44); // ~25 degrees
+            vec2 rotated = rotate2D(centered, 0.35);
             rotated.x /= aspect;
             vec2 uvRot = rotated * 0.5 + 0.5;
 
             // Gradient base (use rotated UVs)
             float t = uvRot.x;
-            vec3 base = getGradientColor(t);
+            vec3 base = getGradientColor(t) * 0.5;
 
-            // Mouse-reactive spotlight
+            // Mouse-reactive spotlight — softer, larger
             vec2 mouseUV = iMouse / iResolution.xy;
             float dist = length(uv - mouseUV);
             float r = max(uSpotlightRadius, 0.001);
             float dn = dist / r;
             float spot = (1.0 - 2.0 * pow(dn, uSpotlightSoftness)) * uSpotlightOpacity;
-            spot = max(spot, 0.0);
+            spot = max(spot, 0.0) * 0.6;
 
-            // Angled blinds / stripes
-            float stripe = fract(uvRot.x * max(uBlindCount, 1.0));
-            if (uShineFlip > 0.5) stripe = 1.0 - stripe;
+            // Smooth sine-based beams instead of hard stripes
+            float beamPhase = uvRot.x * uBlindCount * 3.14159;
+            float beam = pow(max(sin(beamPhase), 0.0), 3.0); // soft glowing bars
 
-            // Visibility mask — only some blinds glow, others stay dark
+            // Visibility mask — only ~30% of beams glow
             float blindIdx = floor(uvRot.x * uBlindCount);
             float vis = rand(vec2(blindIdx * 13.37, 7.77));
-            float blindMask = smoothstep(0.35, 0.65, vis); // ~50% of blinds visible
+            float blindMask = smoothstep(0.55, 0.75, vis);
 
-            // Compose
-            vec3 col = (vec3(spot) + base - vec3(stripe)) * blindMask;
+            // Edge softening per beam — smooth in/out
+            float blindLocal = fract(uvRot.x * uBlindCount);
+            float edgeSoft = smoothstep(0.0, 0.15, blindLocal) * smoothstep(1.0, 0.85, blindLocal);
 
-            // Film grain
-            col += (rand(gl_FragCoord.xy + iTime) - 0.5) * uNoise;
+            // Compose — much subtler
+            vec3 col = (base + vec3(spot)) * (beam * blindMask * edgeSoft * 0.8 + 0.05);
 
-            // Stronger vignette — fade edges to black
-            float vignette = 1.0 - smoothstep(0.2, 1.0, length(uv - 0.5) * 1.6);
+            // Subtle film grain
+            col += (rand(gl_FragCoord.xy + iTime) - 0.5) * uNoise * 0.6;
+
+            // Strong vignette
+            float vignette = 1.0 - smoothstep(0.15, 0.85, length(uv - 0.5) * 1.8);
             col *= vignette;
 
             // Darken overall
-            col *= 0.7;
+            col *= 0.45;
 
             // Global opacity for scroll dimming
             col *= uOpacity;
