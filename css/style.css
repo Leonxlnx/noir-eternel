@@ -442,6 +442,13 @@ body {
   height: 250vh;
 }
 
+/* Scenes 3–5 need more scroll room for text to stay visible */
+.scene:nth-child(3),
+.scene:nth-child(4),
+.scene:nth-child(5) {
+  height: 350vh;
+}
+
 .scene-content {
   position: sticky;
   top: 0;
