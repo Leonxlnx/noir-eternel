@@ -198,7 +198,7 @@
                 scrollTrigger: {
                     trigger: scenes[2],
                     start: '50% top',
-                    end: '85% top',
+                    end: 'bottom top',
                     onLeave: () => {
                         gsap.to([...uWords, uBody], { opacity: 0, duration: 0.3 });
                     },
@@ -260,7 +260,7 @@
                 ScrollTrigger.create({
                     trigger: scene4,
                     start: '50% top',
-                    end: '85% top',
+                    end: 'bottom top',
                     onEnter: () => tw4.classList.add('visible'),
                     onLeave: () => tw4.classList.remove('visible'),
                     onEnterBack: () => tw4.classList.add('visible'),
@@ -277,7 +277,7 @@
                 ScrollTrigger.create({
                     trigger: scene5,
                     start: '50% top',
-                    end: '85% top',
+                    end: 'bottom top',
                     onEnter: () => tw5.classList.add('visible'),
                     onLeave: () => tw5.classList.remove('visible'),
                     onEnterBack: () => tw5.classList.add('visible'),
@@ -294,7 +294,7 @@
                 ScrollTrigger.create({
                     trigger: scene6,
                     start: '40% top',
-                    end: '75% top',
+                    end: 'bottom top',
                     onEnter: () => tw6.classList.add('visible'),
                     onLeave: () => tw6.classList.remove('visible'),
                     onEnterBack: () => tw6.classList.add('visible'),
