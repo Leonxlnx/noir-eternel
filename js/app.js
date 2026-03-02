@@ -160,13 +160,12 @@
 
 
         // ─── Nav + Beams ───
-        const beams = document.getElementById('beams');
         ScrollTrigger.create({
             start: 100,
             onUpdate: () => {
                 const scrolled = scrollY > 100;
                 nav.classList.toggle('scrolled', scrolled);
-                if (beams) beams.classList.toggle('dimmed', scrollY > innerHeight);
+                if (window.beamsDim) window.beamsDim(scrollY > innerHeight);
             }
         });
 

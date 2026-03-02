@@ -110,90 +110,20 @@ body {
 }
 
 /* ═══════════════════════════════════
-   BEAMS – Animated light rays
+   BEAMS – Three.js container
    ═══════════════════════════════════ */
-.beams {
+#beams {
   position: fixed;
   inset: 0;
   z-index: 2;
   pointer-events: none;
-  overflow: hidden;
-  opacity: 0.4;
-  transition: opacity 1.5s var(--ease);
 }
 
-.beams.dimmed {
-  opacity: 0.1;
-}
+#beams canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
 
-.beam {
-  position: absolute;
-  top: -20%;
-  width: 1px;
-  height: 140%;
-  background: linear-gradient(180deg,
-      transparent 0%,
-      rgba(201, 169, 110, 0.08) 20%,
-      rgba(201, 169, 110, 0.25) 50%,
-      rgba(201, 169, 110, 0.08) 80%,
-      transparent 100%);
-  transform-origin: top center;
-}
-
-.beam-1 {
-  left: 15%;
-  animation: beamSway 8s ease-in-out infinite;
-  animation-delay: 0s;
-}
-
-.beam-2 {
-  left: 35%;
-  animation: beamSway 10s ease-in-out infinite;
-  animation-delay: -2s;
-  width: 2px;
-}
-
-.beam-3 {
-  left: 50%;
-  animation: beamSway 7s ease-in-out infinite;
-  animation-delay: -4s;
-}
-
-.beam-4 {
-  left: 68%;
-  animation: beamSway 9s ease-in-out infinite;
-  animation-delay: -1s;
-  width: 2px;
-}
-
-.beam-5 {
-  left: 85%;
-  animation: beamSway 11s ease-in-out infinite;
-  animation-delay: -3s;
-}
-
-@keyframes beamSway {
-
-  0%,
-  100% {
-    transform: rotate(-2deg) scaleY(1);
-    opacity: 0.4;
-  }
-
-  25% {
-    transform: rotate(1deg) scaleY(1.05);
-    opacity: 0.7;
-  }
-
-  50% {
-    transform: rotate(-1deg) scaleY(0.95);
-    opacity: 0.5;
-  }
-
-  75% {
-    transform: rotate(2deg) scaleY(1.03);
-    opacity: 0.8;
-  }
 }
 
 /* ═══════════════════════════════════
